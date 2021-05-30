@@ -18,7 +18,7 @@ recept-hodnoceni, recept-nazev, recept-popis.
 6) Poslední vybraný recept ulož do Local Storage, aby se při novém otevření aplikace načetl.
 */
 
-//const lsKey = 'nejakyKlic';
+const lsKey = 'nejakyKlic';
 
 const ulozeneRecepty = recepty; //ulozeni druheho js-souboru do promenne
 const seznam = document.getElementById("recepty");
@@ -55,8 +55,8 @@ function generateList() {
 
     vykreslit();
 
-    //const posledniRecept = JSON.parse(localStorage.getItem(lsKey));
-    //zobrazitDetailReceptu(posledniRecept);
+    const posledniRecept = JSON.parse(localStorage.getItem(lsKey));
+    zobrazitDetailReceptu(posledniRecept);
 }
 
 function receptyNaZobrazeni() {
@@ -64,6 +64,7 @@ function receptyNaZobrazeni() {
     const vyhledavani = document.getElementById("hledat").value.toLowerCase();
     const razeni = document.getElementById("razeni").value;
 
+    // hledani, filtrovani dle kategorie, serazeni podle hodnoceni
     return ulozeneRecepty
         .filter(recept => vybranaKategorie === 'vsechno' || recept.kategorie === vybranaKategorie)
         .filter(recept => vyhledavani === '' || recept.nadpis.toLowerCase().indexOf(vyhledavani) > -1)
@@ -76,10 +77,10 @@ function vykreslit() {
     const filtrovaneRecepty = receptyNaZobrazeni();
 
     for (let i = 0; i < filtrovaneRecepty.length; i++) {
-        let r = filtrovaneRecepty[i];
+        let dalsiPromennaProRecepty = filtrovaneRecepty[i];
 
-        seznam.innerHTML += `<div class="recept" onclick="zobrazitDetailReceptu(${r.id})"> <div class="recept-obrazek"> <img src=${r.img}" alt="Obrazek"> </div> <div class="recept-info" id="infoReceptu">
-      <h3>${r.nadpis}</h3> </div>`;
+        seznam.innerHTML += `<div class="recept" onclick="zobrazitDetailReceptu(${dalsiPromennaProRecepty.id})"> <div class="recept-obrazek"> <img src=${dalsiPromennaProRecepty.img}" alt="Obrazek"> </div> <div class="recept-info" id="infoReceptu">
+      <h3>${dalsiPromennaProRecepty.nadpis}</h3> </div>`;
     }
 }
 
@@ -89,14 +90,14 @@ function zobrazitDetailReceptu(idReceptu) {
         return;
     }
 
-    const filtrovane = ulozeneRecepty.filter(r => r.id === idReceptu); // pole receptu, maximalne 1
-    const tenJediny = filtrovane.length > 0 ? filtrovane[0] : null;
+    const filtrovane = ulozeneRecepty.filter(dalsiPromennaProRecepty => dalsiPromennaProRecepty.id === idReceptu); // pole receptu, maximalne 1
+    const vyfiltrovanyRecept = filtrovane.length > 0 ? filtrovane[0] : null;
 
-    if (tenJediny === null) {
+    if (vyfiltrovanyRecept === null) {
         return;
     }
 
-    //localStorage.setItem(lsKey, JSON.stringify(idReceptu));
+    localStorage.setItem(lsKey, JSON.stringify(idReceptu));
 
     let foto = document.getElementById("recept-foto");
     foto.src = ulozeneRecepty[idReceptu-1].img;
